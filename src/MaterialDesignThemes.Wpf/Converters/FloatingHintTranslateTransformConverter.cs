@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 
@@ -8,7 +8,10 @@ public class FloatingHintTranslateTransformConverter : IMultiValueConverter
 {
     public object? Convert(object?[]? values, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (values is not [double scale, double lower, double upper, SmartHint hint, Point floatingOffset, ..]) return Transform.Identity;
+        if (values is not [double scale, double lower, double upper, SmartHint hint, Point floatingOffset, double yOffset, ..])
+        {
+            return Transform.Identity;
+        }
 
         // Back-compatible behavior, fall back to using the non-nullable floatingOffset if it has a non-default value
         if (hint.FloatingTarget is null || floatingOffset != HintAssist.DefaultFloatingOffset)
@@ -40,7 +43,7 @@ public class FloatingHintTranslateTransformConverter : IMultiValueConverter
 
         double GetFloatingTargetVerticalOffset()
         {
-            double offset = hint.FloatingTarget.TranslatePoint(new Point(0, 0), hint).Y;
+            double offset = yOffset;
             offset += hint.InitialVerticalOffset;
             offset -= hint.ActualHeight;
 
